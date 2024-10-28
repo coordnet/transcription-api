@@ -169,13 +169,19 @@ Once running, you can access the Swagger documentation at: [http://localhost:300
 
 ---
 
+## Contributing
+
+Please check the [repo issues](https://github.com/coordnet/coordnet/issues) for ideas for contributions and read the [documentation about contributing](CONTRIBUTING.md) for more information.
+
+Any contribution intentionally submitted for inclusion in this repository, shall be dual licensed as below, without any additional terms or conditions.
+
+---
+
 ## Acknowledgments
 
 - Some logic for the Whisper transcription was influenced by ideas found in the [WAAS](https://github.com/schibsted/WAAS) project.
 
 ---
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 **Additional Notes:**
 
@@ -183,3 +189,14 @@ Once running, you can access the Swagger documentation at: [http://localhost:300
 - For the `/transcribe_text` endpoint, send a JSON payload with the `text` field containing the text you wish to process.
 - The `/job/{job_id}` endpoint includes `filename` and `totalDuration` fields, which may be `null` if the transcription was created from text input rather than an audio file.
 - Error responses are standardized to include an `"error"` field with a descriptive message.
+
+---
+
+## License
+
+Licensed under either of:
+
+- [Apache 2.0 License](http://www.apache.org/licenses/LICENSE-2.0) ([LICENSE-APACHE](LICENSE-APACHE))
+- [MIT License](http://opensource.org/licenses/MIT) ([LICENSE-MIT](LICENSE-MIT))
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
