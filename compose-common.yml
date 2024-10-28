@@ -1,0 +1,23 @@
+services:
+  app_base:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - MODEL=$MODEL
+    volumes:
+      - ./uploads:/app/uploads
+      - ./transcriptions.db:/app/transcriptions.db
+    env_file:
+      - .env
+    develop:
+      watch:
+        - action: sync
+          path: .
+          target: /app
+          ignore:
+            - .venv/
+            - uploads/
+            - ./transcriptions.db
+        - action: rebuild
+          path: ./pyproject.toml

@@ -1,0 +1,23 @@
+services:
+  coord_transcription_api:
+    extends:
+      file: compose-common.yml
+      service: app_base
+    ports:
+      - "3000:3000"
+    command: gunicorn --reload -w 2 -b 0.0.0.0:3000 'src.main:app'
+    depends_on:
+      - coord_transcription_redis
+
+  coord_transcription_worker:
+    extends:
+      file: compose-common.yml
+      service: app_base
+    command: watchmedo auto-restart --patterns="src/*.py" --recursive -- rq worker --url redis://coord_transcription_redis:6379 -c worker
+    depends_on:
+      - coord_transcription_redis
+
+  coord_transcription_redis:
+    image: redis
+    ports:
+      - "6379:6379"
