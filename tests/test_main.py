@@ -125,7 +125,7 @@ def test_transcribe_exception_during_processing(mock_tempfile, mock_enqueue, cli
 def test_get_job_info_success(client, mock_database):
     # Setup mock data
     job_id = "12345"
-    created = datetime.datetime.now(datetime.timezone.utc)
+    created = datetime.datetime.now()
     transcription = Transcription(
         job_id=job_id,
         transcription="This is a test transcription.",
@@ -266,9 +266,7 @@ def test_get_job_info_rq_exception(client, mock_database, mock_rq_queue, caplog)
     # Mock the RQ fetch_job to raise a Redis ConnectionError
     from redis.exceptions import ConnectionError
 
-    mock_rq_queue.fetch_job.side_effect = ConnectionError(
-        "Mocked Redis connection error"
-    )
+    mock_rq_queue.fetch_job.side_effect = ConnectionError("Mocked Redis connection error")
 
     # Make the GET request
     response = client.get(f"/job/{job_id}")

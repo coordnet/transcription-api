@@ -1,7 +1,7 @@
 import logging
 import os
 import tempfile
-from typing import Any, Dict, Optional
+from typing import Any
 
 import sentry_sdk
 from flasgger import Swagger
@@ -26,7 +26,7 @@ UPLOADS_PATH = os.getenv("UPLOADS_PATH", "./uploads")
 TESTING = os.getenv("TESTING", "0")
 SENTRY_DSN = os.environ.get("SENTRY_DSN")
 ENVIRONMENT = os.environ.get("ENVIRONMENT", "dev")
-MAX_CONTENT_LENGTH = os.environ.get("MAX_CONTENT_LENGTH", 250 * 1024 * 1024)
+MAX_CONTENT_LENGTH = int(os.environ.get("MAX_CONTENT_LENGTH", 250 * 1024 * 1024))
 
 # Sentry initialization
 if SENTRY_DSN and TESTING == "0":
@@ -176,10 +176,10 @@ def get_job_info(job_id: str) -> Any:
     """
     try:
         # Attempt to fetch the transcription record from the database
-        transcription: Optional[Transcription] = db.get_transcription(job_id)
+        transcription: Transcription | None = db.get_transcription(job_id)
         if transcription:
             # Construct the response data from the transcription record
-            job_info: Dict[str, Any] = {
+            job_info: dict[str, Any] = {
                 "jobId": transcription.job_id,
                 "status": "finished",
                 "transcription": transcription.transcription,
@@ -190,7 +190,7 @@ def get_job_info(job_id: str) -> Any:
             return jsonify(job_info), 200
 
         # If transcription not found in DB, check the RQ job status
-        job: Optional[Job] = rq_queue.fetch_job(job_id)
+        job: Job | None = rq_queue.fetch_job(job_id)
         if job:
             # Map RQ job statuses to desired status messages
             if job.is_failed:

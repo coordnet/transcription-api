@@ -3,7 +3,6 @@ import os
 import sqlite3
 from contextlib import contextmanager
 from datetime import datetime
-from typing import Optional
 
 from src.types import Transcription
 
@@ -36,7 +35,8 @@ class Database:
     def init_db(self):
         with self.get_connection() as conn:
             cursor = conn.cursor()
-            cursor.execute("""
+            cursor.execute(
+                """
                 CREATE TABLE IF NOT EXISTS transcriptions (
                     job_id TEXT PRIMARY KEY,
                     transcription TEXT,
@@ -45,14 +45,15 @@ class Database:
                     running_time REAL,
                     creation_date DATETIME
                 )
-            """)
+            """
+            )
 
     def save_transcription(self, transcription: Transcription):
         with self.get_connection() as conn:
             cursor = conn.cursor()
             cursor.execute(
                 """
-                INSERT INTO transcriptions 
+                INSERT INTO transcriptions
                 (job_id, transcription, filename, total_duration, running_time, creation_date)
                 VALUES (?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
                 """,
@@ -65,7 +66,7 @@ class Database:
                 ),
             )
 
-    def get_transcription(self, job_id: str) -> Optional[Transcription]:
+    def get_transcription(self, job_id: str) -> Transcription | None:
         with self.get_connection() as conn:
             cursor = conn.cursor()
             cursor.execute(
@@ -73,7 +74,7 @@ class Database:
                 SELECT
                     job_id, transcription, filename, total_duration, running_time,
                     creation_date
-                FROM transcriptions 
+                FROM transcriptions
                 WHERE job_id = ?
                 """,
                 (job_id,),

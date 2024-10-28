@@ -64,14 +64,10 @@ def delete_job_file(job: Job):
                         os.remove(temp_file_path)
                         logger.info(f"Deleted temporary file: {temp_file_path}")
                     else:
-                        logger.warning(
-                            f"Temporary file does not exist: {temp_file_path}"
-                        )
+                        logger.warning(f"Temporary file does not exist: {temp_file_path}")
                 except Exception as e:
                     logger.error(f"Error deleting temporary file {temp_file_path}: {e}")
         else:
-            logger.warning(
-                f"No arguments found for job {job.id}. Cannot delete temporary file."
-            )
+            logger.warning(f"No arguments found for job {job.id}. Cannot delete temporary file.")
     except Exception as e:
         logger.error(f"Error retrieving temporary file path for job {job.id}: {e}")
