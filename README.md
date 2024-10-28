@@ -175,22 +175,16 @@ Please check the [repo issues](https://github.com/coordnet/coordnet/issues) for 
 
 Any contribution intentionally submitted for inclusion in this repository, shall be dual licensed as below, without any additional terms or conditions.
 
----
-
 ## Acknowledgments
 
 - Some logic for the Whisper transcription was influenced by ideas found in the [WAAS](https://github.com/schibsted/WAAS) project.
 
----
-
-**Additional Notes:**
+## Additional Notes:
 
 - For the `/transcribe` endpoint, ensure that you send the audio file as raw binary data in the body of the request, with the `Content-Type` header set to `application/octet-stream`.
 - For the `/transcribe_text` endpoint, send a JSON payload with the `text` field containing the text you wish to process.
 - The `/job/{job_id}` endpoint includes `filename` and `totalDuration` fields, which may be `null` if the transcription was created from text input rather than an audio file.
 - Error responses are standardized to include an `"error"` field with a descriptive message.
-
----
 
 ## License
 
