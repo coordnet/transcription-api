@@ -1,11 +1,11 @@
 services:
-  redis:
+  coord_transcription_redis:
     restart: unless-stopped
-  api:
+  coord_transcription_api:
     command: gunicorn -w 4 --timeout 300 -b 0.0.0.0:3000 'src.main:app'
     restart: unless-stopped
-  worker:
-    command: rq worker --url redis://redis:6379 -c worker
+  coord_transcription_worker:
+    command: rq worker --url redis://coord_transcription_redis:6379 -c worker
     restart: unless-stopped
     deploy:
       resources:
