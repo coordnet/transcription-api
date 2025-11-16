@@ -1,4 +1,4 @@
-FROM nvidia/cuda:12.2.2-cudnn8-runtime-ubuntu22.04
+FROM nvidia/cuda:12.2.2-cudnn9-runtime-ubuntu22.04
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /bin/uv
 
 WORKDIR /app
@@ -8,15 +8,21 @@ RUN apt-get update && apt-get install -y \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-ARG MODEL=tiny
+ARG MODEL=turbo
 ENV MODEL=$MODEL
 
 RUN mkdir -p /app/models/
 
-RUN wget -O /app/models/config.json https://huggingface.co/Systran/faster-whisper-${MODEL}/resolve/main/config.json && \
-    wget -O /app/models/model.bin https://huggingface.co/Systran/faster-whisper-${MODEL}/resolve/main/model.bin && \
-    wget -O /app/models/tokenizer.json https://huggingface.co/Systran/faster-whisper-${MODEL}/resolve/main/tokenizer.json && \
-    wget -O /app/models/vocabulary.txt https://huggingface.co/Systran/faster-whisper-${MODEL}/resolve/main/vocabulary.txt
+# Map 'turbo' to 'large-v3-turbo' for HuggingFace model path
+RUN if [ "$MODEL" = "turbo" ]; then \
+        MODEL_PATH="large-v3-turbo"; \
+    else \
+        MODEL_PATH="$MODEL"; \
+    fi && \
+    wget -O /app/models/config.json https://huggingface.co/Systran/faster-whisper-${MODEL_PATH}/resolve/main/config.json && \
+    wget -O /app/models/model.bin https://huggingface.co/Systran/faster-whisper-${MODEL_PATH}/resolve/main/model.bin && \
+    wget -O /app/models/tokenizer.json https://huggingface.co/Systran/faster-whisper-${MODEL_PATH}/resolve/main/tokenizer.json && \
+    wget -O /app/models/vocabulary.txt https://huggingface.co/Systran/faster-whisper-${MODEL_PATH}/resolve/main/vocabulary.txt
 
 # Enable bytecode compilation
 ENV UV_COMPILE_BYTECODE=1
