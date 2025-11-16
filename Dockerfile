@@ -8,15 +8,25 @@ RUN apt-get update && apt-get install -y \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-ARG MODEL=tiny
+ARG MODEL=turbo
 ENV MODEL=$MODEL
 
 RUN mkdir -p /app/models/
 
-RUN wget -O /app/models/config.json https://huggingface.co/Systran/faster-whisper-${MODEL}/resolve/main/config.json && \
-    wget -O /app/models/model.bin https://huggingface.co/Systran/faster-whisper-${MODEL}/resolve/main/model.bin && \
-    wget -O /app/models/tokenizer.json https://huggingface.co/Systran/faster-whisper-${MODEL}/resolve/main/tokenizer.json && \
-    wget -O /app/models/vocabulary.txt https://huggingface.co/Systran/faster-whisper-${MODEL}/resolve/main/vocabulary.txt
+# Download model files based on MODEL argument
+# Use Infomaniak-AI repository for turbo model, Systran for others
+RUN if [ "$MODEL" = "turbo" ]; then \
+        wget -O /app/models/config.json https://huggingface.co/Infomaniak-AI/faster-whisper-large-v3-turbo/resolve/main/config.json && \
+        wget -O /app/models/model.bin https://huggingface.co/Infomaniak-AI/faster-whisper-large-v3-turbo/resolve/main/model.bin && \
+        wget -O /app/models/tokenizer.json https://huggingface.co/Infomaniak-AI/faster-whisper-large-v3-turbo/resolve/main/tokenizer.json && \
+        wget -O /app/models/vocabulary.json https://huggingface.co/Infomaniak-AI/faster-whisper-large-v3-turbo/resolve/main/vocabulary.json && \
+        wget -O /app/models/preprocessor_config.json https://huggingface.co/Infomaniak-AI/faster-whisper-large-v3-turbo/resolve/main/preprocessor_config.json; \
+    else \
+        wget -O /app/models/config.json https://huggingface.co/Systran/faster-whisper-${MODEL}/resolve/main/config.json && \
+        wget -O /app/models/model.bin https://huggingface.co/Systran/faster-whisper-${MODEL}/resolve/main/model.bin && \
+        wget -O /app/models/tokenizer.json https://huggingface.co/Systran/faster-whisper-${MODEL}/resolve/main/tokenizer.json && \
+        wget -O /app/models/vocabulary.txt https://huggingface.co/Systran/faster-whisper-${MODEL}/resolve/main/vocabulary.txt; \
+    fi
 
 # Enable bytecode compilation
 ENV UV_COMPILE_BYTECODE=1
